@@ -38,6 +38,15 @@ Workable.prototype.setAccessToken = function(token) {
     this.accessToken = token;
 };
 
+/**
+ * Returns information about all the accounts
+ * @param {String} [subdomain] [The account's subdomain]
+ * @param {Function} callback Method to execute on completion
+ */
+Workable.prototype.getAccounts = function(callback) {
+    return this._get('/', callback);
+};
+
 
 /**
  * Returns information about an account
@@ -182,8 +191,6 @@ Workable.prototype._request = function(options, callback) {
     if (this.accessToken) {
         options.headers.Authorization = 'Bearer ' + this.accessToken;
     }
-
-    console.log("Request options: " + JSON.stringify(options));
 
     // Use request to make the http call
     return request(options, function(error, response, body) {

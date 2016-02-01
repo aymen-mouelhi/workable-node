@@ -1,6 +1,6 @@
 var vows = require('vows');
 var assert = require('assert');
-var workable = require('../index.js')();
+var workable = require('../index.js');
 
 
 vows.describe('api tests').addBatch({
@@ -16,4 +16,4 @@ vows.describe('api tests').addBatch({
   }
 
 
-});
+}).export(module);
