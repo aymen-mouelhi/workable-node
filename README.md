@@ -6,7 +6,7 @@
 ### Installation
 
 ```bash
-$ npm install github3
+$ npm install workable-node
 ```
 
 ### Example Code
