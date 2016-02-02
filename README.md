@@ -45,6 +45,69 @@ workable.getAccountRecruiters('<account-subdomain>', function(error, recruiters)
   console.log(JSON.stringify(recruiters));
 });
 
+// Candidate Object
+
+var candidate = {
+  "sourced": true,
+  "candidate": {
+    "name": "Jj Botha",
+    "firstname": "Jj",
+    "lastname": "Botha",
+    "headline": "Professional Administration Manager",
+    "education_entries": [
+      { "degree": "MBA", "school": "University of Pennsylvania", "field_of_study": null, "start_date": "2008-03-01", "end_date": "2011-03-30" },
+      { "degree": "B.S.", "school": "University of Chicago", "field_of_study": "Marketing Communication & Economics", "start_date": "2004-09-01", "end_date": "2007-03-30" }
+    ],
+
+    "experience_entries": [
+      {
+        "title": "Sales Director",
+        "summary": null,
+        "start_date": "2011-03-01",
+        "end_date": "2014-03-30",
+        "current": false,
+        "company": "Vox Mobile",
+        "industry": "Telecommunications"
+      }
+    ],
+
+    "answers": [
+      {
+        "question_key": "2128d717",
+        "body": "Planning"
+      },
+      {
+        "question_key": "3399e6cd",
+        "choices": ["1e477229"]
+      }
+    ],
+
+    "skills": [ "Travel Planning", "Problem Solving"],
+    "social_profiles": [
+        {
+          "type": "twitter",
+          "name": "Twitter",
+          "username": "jj_botha",
+          "url": "http://www.twitter.com/jj_botha"
+        },
+        {
+          "type": "linkedin",
+          "name": "LinkedIn",
+          "url": "http://www.linkedin.com/in/jj_botha"
+        },
+        {
+          "type": "googleplus",
+          "url": "https://plus.google.com/6908286706342698"
+        }
+    ]
+  }
+}
+
+// Create Candidate in Workable
+workable.createCandidate('<account-subdomain>', '<Job>', 'applied', candidate, function(error, data) {
+  // created
+  console.log("User has been " + data.status);
+});
 
 ```
 

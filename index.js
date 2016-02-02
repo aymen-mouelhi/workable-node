@@ -8,7 +8,7 @@ var noOp = function() {};
 
 
 /**
- * Sets credentials for GitHub access.
+ * Sets credentials for Workable access.
  * @param {Object} opts
  */
 
@@ -31,7 +31,7 @@ var createInstance = function(opts) {
 
 
 /**
- * Sets API Access Token for GitHub access.
+ * Sets API Access Token for Workable access.
  * @param {String} [Token] [API Access Token]
  */
 Workable.prototype.setAccessToken = function(token) {
@@ -87,7 +87,7 @@ Workable.prototype.getStages = function(subdomain, callback) {
 /**
  * Returns a collection of an account jobs
  * @param {String} [subdomain] [The account's subdomain]
- * @param {Functon} callback Method to execute on completion
+ * @param {function} callback Method to execute on completion
  */
 Workable.prototype.getJobs = function(subdomain, callback) {
     return this._get('/' + subdomain + '/jobs', callback);
@@ -117,7 +117,7 @@ Workable.prototype.getJobQuestions = function(subdomain, shortcode, callback) {
  * Get a Job's members
  * @param {String} [subdomain] [The account's subdomain]
  * @param {String} [shortcode] [The job's shortcode]
- * @param {Functon} callback Method to execute on completion
+ * @param {function} callback Method to execute on completion
  */
 Workable.prototype.getJobMembers = function(subdomain, shortcode, callback) {
     return this._get('/' + subdomain + '/jobs/' + shortcode + '/members', callback);
@@ -127,7 +127,7 @@ Workable.prototype.getJobMembers = function(subdomain, shortcode, callback) {
  * Get a Job's recruiters
  * @param {String} [subdomain] [The account's subdomain]
  * @param {String} [shortcode] [The job's shortcode]
- * @param {Functon} callback Method to execute on completion
+ * @param {function} callback Method to execute on completion
  */
 Workable.prototype.getJobRecruiters = function(subdomain, shortcode, callback) {
     return this._get('/' + subdomain + '/jobs/' + shortcode + '/recruiters', callback);
@@ -137,7 +137,7 @@ Workable.prototype.getJobRecruiters = function(subdomain, shortcode, callback) {
  * Get a Job's candidates
  * @param {String} [subdomain] [The account's subdomain]
  * @param {String} [shortcode] [The job's shortcode]
- * @param {Functon} callback Method to execute on completion
+ * @param {function} callback Method to execute on completion
  */
 Workable.prototype.getJobCandidates = function(subdomain, shortcode, callback) {
     return this._get('/' + subdomain + '/jobs/' + shortcode + '/candidates', callback);
@@ -148,34 +148,26 @@ Workable.prototype.getJobCandidates = function(subdomain, shortcode, callback) {
  * @param {String} [subdomain] [The account's subdomain]
  * @param {String} [shortcode] [The job's shortcode]
  * @param {String} [id] [The candidates's id]
- * @param {Functon} callback Method to execute on completion
+ * @param {function} callback Method to execute on completion
  */
 Workable.prototype.getJobCandidate = function(subdomain, shortcode, id, callback) {
     return this._get('/' + subdomain + '/jobs/' + shortcode + '/candidates/' + id, callback);
 };
 
 /**
- * Repository tree
- * @class Workable
- * @method createTreeWithBlob
+ * Create new Candidate
+ * @param {String} [subdomain] [The account's subdomain]
+ * @param {String} [shortcode] [The job's shortcode]
+ * @param {String} [stage] [Depending on the value of the sourced flag, candidates are put into the sourced or applied stage.]
+ * @param {Object} [candidate] [The candidate]
+ * @param {function} callback Method to execute on completion
  */
-Workable.prototype.createCandidate = function(repo, name, path, blob_sha, last_tree_sha, callback) {
-    var new_tree = {
-        "base_tree": last_tree_sha,
-        "tree": [{
-            "path": path,
-            "mode": "100644",
-            "type": "blob",
-            "sha": blob_sha
-        }]
-    };
-    return this._post('/repos/' + name + '/' + repo + '/git/trees', JSON.stringify(new_tree), callback);
+Workable.prototype.createCandidate = function(subdomain, shortcode, stage, candidate, callback) {
+    return this._post('/' + subdomain + '/jobs/' + shortcode + '/candidates', JSON.stringify(candidate), callback);
 };
 
 /**
- * Builds and executes a github api call
- * @class Workable
- * @private _request
+ * Builds and executes a Workable api call
  * @param {Object} options or just API URI Path for GET requests
  * @param {Function} callback Function to call upon error or success
  * @returns {Object} error, {Object} data
@@ -224,7 +216,7 @@ Workable.prototype._request = function(options, callback) {
 /**
  * Performs a GET
  * @param {String} path API endpoint
- * @param {Functon} callback Method to execute on completion
+ * @param {function} callback Method to execute on completion
  */
 Workable.prototype._get = function(path, callback) {
     return this._request({
@@ -237,7 +229,7 @@ Workable.prototype._get = function(path, callback) {
  * Performs a PUT
  * @param {String} path API endpoint
  * @param {Object} body Data
- * @param {Functon} callback Method to execute on completion
+ * @param {function} callback Method to execute on completion
  */
 Workable.prototype._put = function(path, body, callback) {
     body = body || '{}';
@@ -256,7 +248,7 @@ Workable.prototype._put = function(path, body, callback) {
  * Performs a PATCH
  * @param {String} path API endpoint
  * @param {Object} body Data
- * @param {Functon} callback Method to execute on completion
+ * @param {function} callback Method to execute on completion
  */
 Workable.prototype._patch = function(path, body, callback) {
     body = body || '{}';
@@ -276,7 +268,7 @@ Workable.prototype._patch = function(path, body, callback) {
  * Performs a POST request
  * @param {String} path API endpoint
  * @param {Object} body Data
- * @param {Functon} callback Method to execute on completion
+ * @param {function} callback Method to execute on completion
  */
 Workable.prototype._post = function(path, body, callback) {
     body = body || '{}';
@@ -295,7 +287,7 @@ Workable.prototype._post = function(path, body, callback) {
  * Performs a DELETE
  * @param {String} path API endpoint
  * @param {Object} body Data
- * @param {Functon} callback Method to execute on completion
+ * @param {function} callback Method to execute on completion
  */
 Workable.prototype._delete = function(path, body, callback) {
     body = body || '{}';
