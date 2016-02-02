@@ -151,6 +151,7 @@ Workable.prototype.getJobCandidates = function(subdomain, shortcode, callback) {
  * @param {function} callback Method to execute on completion
  */
 Workable.prototype.getJobCandidate = function(subdomain, shortcode, id, callback) {
+    // Todo: Update list of parameters !
     return this._get('/' + subdomain + '/jobs/' + shortcode + '/candidates/' + id, callback);
 };
 
