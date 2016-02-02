@@ -18,7 +18,7 @@ vows.describe('api tests').addBatch({
    // _get
   'when making a generic _get call to /accounts':{
     topic:function(){ 
-      github3._get('/accounts', this.callback);
+      workable._get('/accounts', this.callback);
     },
     'we should receive no errors, and data back':function(error, data) {
       assert.equal(error, null);
