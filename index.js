@@ -139,8 +139,8 @@ Workable.prototype.getJobRecruiters = function(subdomain, shortcode, callback) {
  * @param {String} [shortcode] [The job's shortcode]
  * @param {function} callback Method to execute on completion
  */
-Workable.prototype.getJobCandidates = function(subdomain, shortcode, callback) {
-    return this._get('/' + subdomain + '/jobs/' + shortcode + '/candidates', callback);
+Workable.prototype.getJobCandidates = function(subdomain, shortcode, stage, limit, since_id, max_id, created_after, updated_after, callback) {
+    return this._get('/' + subdomain + '/jobs/' + shortcode + '/candidates?stage=' + stage + '&limit=' + limit + '&since_id=' + since_id + '&max_id=' + max_id + '&created_after=' + created_after + '&updated_after=' + updated_after, callback);
 };
 
 /**
