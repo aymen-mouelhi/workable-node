@@ -48,7 +48,7 @@ workable.getAccountRecruiters('<account-subdomain>', function(error, recruiters)
 // Candidate Object
 
 var candidate = {
-  "sourced": true,
+  "sourced": true, // won't recieve thank you email, if this needs to be done then sourced must be set to false
   "candidate": {
     "name": "Jj Botha",
     "firstname": "Jj",
