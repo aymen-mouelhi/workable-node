@@ -26,7 +26,7 @@ var workable = new Workable({
 });
 
 // get All accounts
-workable.getAccounts(function(error, account) {
+workable.getAccounts(function(error, accounts) {
   console.log(JSON.stringify(accounts));
 });
 
