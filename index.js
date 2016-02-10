@@ -1,11 +1,10 @@
 /**
  * NodeJS Workable API Wrapper
- * @author Aymen Mouelhi <aymen.mouelhi@gmail.com> 
+ * @author Aymen Mouelhi <aymen.mouelhi@gmail.com>
  */
 
 var request = require('request');
 var noOp = function() {};
-
 
 /**
  * Sets credentials for Workable access.
@@ -29,7 +28,6 @@ var createInstance = function(opts) {
     return new Workable(opts);
 };
 
-
 /**
  * Sets API Access Token for Workable access.
  * @param {String} [Token] [API Access Token]
@@ -46,7 +44,6 @@ Workable.prototype.setAccessToken = function(token) {
 Workable.prototype.getAccounts = function(callback) {
     return this._get('/', callback);
 };
-
 
 /**
  * Returns information about an account
@@ -164,7 +161,7 @@ Workable.prototype.getJobCandidate = function(subdomain, shortcode, id, callback
  * @param {function} callback Method to execute on completion
  */
 Workable.prototype.createCandidate = function(subdomain, shortcode, stage, candidate, callback) {
-    return this._post('/' + subdomain + '/jobs/' + shortcode + '/candidates', JSON.stringify(candidate), callback);
+    return this._post('/' + subdomain + '/jobs/' + shortcode + '/candidates', candidate, callback);
 };
 
 /**
@@ -184,6 +181,8 @@ Workable.prototype._request = function(options, callback) {
     if (this.accessToken) {
         options.headers.Authorization = 'Bearer ' + this.accessToken;
     }
+
+    console.log('Path: ' + options.uri);
 
     // Use request to make the http call
     return request(options, function(error, response, body) {
@@ -264,22 +263,21 @@ Workable.prototype._patch = function(path, body, callback) {
         callback);
 };
 
-
 /**
  * Performs a POST request
  * @param {String} path API endpoint
  * @param {Object} body Data
  * @param {function} callback Method to execute on completion
  */
-Workable.prototype._post = function(path, body, callback) {
-    body = body || '{}';
+Workable.prototype._post = function(path, json, callback) {
+    json = json || '{}';
     return this._request({
             uri: path,
             method: "POST",
             headers: {
-                "Content-Length": body.length
+                'Content-Type': 'application/json'
             },
-            body: body
+            json: json
         },
         callback);
 };
