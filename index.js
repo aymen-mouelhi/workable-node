@@ -182,8 +182,6 @@ Workable.prototype._request = function(options, callback) {
         options.headers.Authorization = 'Bearer ' + this.accessToken;
     }
 
-    console.log('Path: ' + options.uri);
-
     // Use request to make the http call
     return request(options, function(error, response, body) {
         if (error) {
