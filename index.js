@@ -198,7 +198,12 @@ Workable.prototype._request = function(options, callback) {
                 default:
                     try {
                         if (body) {
-                            var data = JSON.parse(body);
+                            if (body.constructor === {}.constructor) {
+                                var data = JSON.parse(body);
+                            }else{
+                                var data = body;
+                            }
+                            
                             return callback(null, data);
                         }
                         // Some API do not have body content
