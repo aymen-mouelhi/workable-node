@@ -187,23 +187,27 @@ Workable.prototype._request = function(options, callback) {
         if (error) {
             callback(error, null);
         } else {
+            console.log("response.statusCode: " + response.statusCode);
             switch (response.statusCode) {
                 case 404:
                     callback(new Error('Path not found'), null);
                     break;
                     // TODO: handle 4XX errors
                 case 422:
-                    callback(new Error(response.body.message), null);
+                    callback(new Error(body.error), null);
+                    break;
+                case 500:
+                    callback(new Error(body.error), null);
                     break;
                 default:
                     try {
                         if (body) {
                             if (body.constructor === {}.constructor) {
                                 var data = JSON.parse(body);
-                            }else{
+                            } else {
                                 var data = body;
                             }
-                            
+
                             return callback(null, data);
                         }
                         // Some API do not have body content
