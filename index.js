@@ -216,7 +216,14 @@ Workable.prototype._request = function(options, callback) {
                 default:
                     try {
                         if (body) {
-                            return callback(null, body);
+                            try{
+                                var data = JSON.parse(body);
+                                
+                                return callback(null, data);
+                            }catch(err){
+                                return callback(null, body);
+                            }
+                            
                         }
                         // Some API do not have body content
                         callback(null, response.headers.status);
