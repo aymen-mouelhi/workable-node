@@ -137,7 +137,17 @@ Workable.prototype.getJobRecruiters = function(subdomain, shortcode, callback) {
  * @param {function} callback Method to execute on completion
  */
 Workable.prototype.getJobCandidates = function(subdomain, shortcode, stage, limit, since_id, max_id, created_after, updated_after, callback) {
-    return this._get('/' + subdomain + '/jobs/' + shortcode + '/candidates?stage=' + stage + '&limit=' + limit + '&since_id=' + since_id + '&max_id=' + max_id + '&created_after=' + created_after + '&updated_after=' + updated_after, callback);
+    limit = limit || 100;
+
+    var query = '/' + subdomain + '/jobs/' + shortcode + '/candidates?limit=' + limit;
+
+    if (stage) {
+        query += '&stage=' + stage;
+    } else if (since_id) {
+        query += '&since_id=' + since_id;
+    }
+    return this._get(query, callback);
+    //return this._get('/' + subdomain + '/jobs/' + shortcode + '/candidates?stage=' + stage + '&limit=' + limit + '&since_id=' + since_id + '&max_id=' + max_id + '&created_after=' + created_after + '&updated_after=' + updated_after, callback);
 };
 
 /**
@@ -182,12 +192,16 @@ Workable.prototype._request = function(options, callback) {
         options.headers.Authorization = 'Bearer ' + this.accessToken;
     }
 
+    if (options.method === 'POST') {
+        var fs = require('fs');
+        fs.writeFileSync('../workable_post.json', JSON.stringify(options.json, null, 4), { flag: 'a' });
+    }
+
     // Use request to make the http call
     return request(options, function(error, response, body) {
         if (error) {
             callback(error, null);
         } else {
-            console.log("response.statusCode: " + response.statusCode);
             switch (response.statusCode) {
                 case 404:
                     callback(new Error('Path not found'), null);
@@ -202,13 +216,7 @@ Workable.prototype._request = function(options, callback) {
                 default:
                     try {
                         if (body) {
-                            if (body.constructor === {}.constructor) {
-                                var data = JSON.parse(body);
-                            } else {
-                                var data = body;
-                            }
-
-                            return callback(null, data);
+                            return callback(null, body);
                         }
                         // Some API do not have body content
                         callback(null, response.headers.status);
