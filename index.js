@@ -192,11 +192,6 @@ Workable.prototype._request = function(options, callback) {
         options.headers.Authorization = 'Bearer ' + this.accessToken;
     }
 
-    if (options.method === 'POST') {
-        var fs = require('fs');
-        fs.writeFileSync('../workable_post.json', JSON.stringify(options.json, null, 4), { flag: 'a' });
-    }
-
     // Use request to make the http call
     return request(options, function(error, response, body) {
         if (error) {
