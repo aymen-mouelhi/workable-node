@@ -201,7 +201,6 @@ Workable.prototype._request = function(options, callback) {
                 case 404:
                     callback(new Error('Path not found'), null);
                     break;
-                    // TODO: handle 4XX errors
                 case 422:
                     callback(new Error(body.error), null);
                     break;
