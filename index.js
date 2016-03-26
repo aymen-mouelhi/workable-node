@@ -18,6 +18,9 @@ var Workable = function(opts) {
     this.accessToken = opts.accessToken || '';
     // API version
     this.version = opts.version || '3';
+
+    this.throttle = opts.throttle || false;
+
 };
 
 /**
@@ -192,41 +195,87 @@ Workable.prototype._request = function(options, callback) {
         options.headers.Authorization = 'Bearer ' + this.accessToken;
     }
 
-    // Use request to make the http call
-    return request(options, function(error, response, body) {
-        if (error) {
-            callback(error, null);
-        } else {
-            switch (response.statusCode) {
-                case 404:
-                    callback(new Error('Path not found'), null);
-                    break;
-                case 422:
-                    callback(new Error(body.error), null);
-                    break;
-                case 500:
-                    callback(new Error(body.error), null);
-                    break;
-                default:
-                    try {
-                        if (body) {
-                            try{
-                                var data = JSON.parse(body);
-                                
-                                return callback(null, data);
-                            }catch(err){
-                                return callback(null, body);
+    if (this.throttle) {
+        var throttledRequest = require('throttled-request')(request);
+
+        // Configure Request
+        throttledRequest.configure({
+            requests: 3,
+            milliseconds: 1000
+        });
+
+        // Use request to make the http call
+        return throttledRequest(options, function(error, response, body) {
+            if (error) {
+                callback(error, null);
+            } else {
+                switch (response.statusCode) {
+                    case 404:
+                        callback(new Error('Path not found'), null);
+                        break;
+                    case 422:
+                        callback(new Error(body.error), null);
+                        break;
+                    case 500:
+                        callback(new Error(body.error), null);
+                        break;
+                    default:
+                        try {
+                            if (body) {
+                                try {
+                                    var data = JSON.parse(body);
+
+                                    return callback(null, data);
+                                } catch (err) {
+                                    return callback(null, body);
+                                }
+
                             }
-                            
+                            // Some API do not have body content
+                            callback(null, response.headers.status);
+                        } catch (err) {
+                            callback(err, null);
                         }
-                        // Some API do not have body content
-                        callback(null, response.headers.status);
-                    } catch (err) {
-                        callback(err, null);
-                    }
+                }
             }
-        }
-    });
+        });
+    } else {
+        // Use request to make the http call
+        return request(options, function(error, response, body) {
+            if (error) {
+                callback(error, null);
+            } else {
+                switch (response.statusCode) {
+                    case 404:
+                        callback(new Error('Path not found'), null);
+                        break;
+                    case 422:
+                        callback(new Error(body.error), null);
+                        break;
+                    case 500:
+                        callback(new Error(body.error), null);
+                        break;
+                    default:
+                        try {
+                            if (body) {
+                                try {
+                                    var data = JSON.parse(body);
+
+                                    return callback(null, data);
+                                } catch (err) {
+                                    return callback(null, body);
+                                }
+
+                            }
+                            // Some API do not have body content
+                            callback(null, response.headers.status);
+                        } catch (err) {
+                            callback(err, null);
+                        }
+                }
+            }
+        });
+    }
 };
 
 /**
