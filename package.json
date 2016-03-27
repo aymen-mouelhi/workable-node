@@ -1,6 +1,6 @@
 {
   "name": "workable-node",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "Workable API Wrapper",
   "main": "index.js",
   "scripts": {

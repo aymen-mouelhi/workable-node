@@ -4,6 +4,13 @@
  */
 
 var request = require('request');
+var throttledRequest = require('throttled-request')(request);
+
+// Configure Request
+throttledRequest.configure({
+    requests: 1,
+    milliseconds: 1000
+});
 var noOp = function() {};
 
 /**
@@ -196,14 +203,6 @@ Workable.prototype._request = function(options, callback) {
     }
 
     if (this.throttle) {
-        var throttledRequest = require('throttled-request')(request);
-
-        // Configure Request
-        throttledRequest.configure({
-            requests: 1,
-            milliseconds: 1000
-        });
-
         // Use request to make the http call
         return throttledRequest(options, function(error, response, body) {
             if (error) {
@@ -218,6 +217,9 @@ Workable.prototype._request = function(options, callback) {
                         break;
                     case 500:
                         callback(new Error(body.error), null);
+                        break;
+                    case 503:
+                        callback('API limit exceeded', null);
                         break;
                     default:
                         try {
@@ -254,6 +256,9 @@ Workable.prototype._request = function(options, callback) {
                         break;
                     case 500:
                         callback(new Error(body.error), null);
+                        break;
+                    case 503:
+                        callback('API limit exceeded', null);
                         break;
                     default:
                         try {
