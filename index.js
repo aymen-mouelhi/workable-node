@@ -200,7 +200,7 @@ Workable.prototype._request = function(options, callback) {
 
         // Configure Request
         throttledRequest.configure({
-            requests: 3,
+            requests: 1,
             milliseconds: 1000
         });
 
