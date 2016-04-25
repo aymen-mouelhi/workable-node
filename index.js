@@ -4,6 +4,7 @@
  */
 
 var request = require('request');
+var url = require('url');
 var throttledRequest = require('throttled-request')(request);
 
 // Configure Request
@@ -159,6 +160,35 @@ Workable.prototype.getJobCandidates = function(subdomain, shortcode, stage, limi
     }
     return this._get(query, callback);
     //return this._get('/' + subdomain + '/jobs/' + shortcode + '/candidates?stage=' + stage + '&limit=' + limit + '&since_id=' + since_id + '&max_id=' + max_id + '&created_after=' + created_after + '&updated_after=' + updated_after, callback);
+};
+
+/**
+ * Get all of a Job's candidates
+ * @param {String} [subdomain] [The account's subdomain]
+ * @param {String} [shortcode] [The job's shortcode]
+ * @param {function} callback Method to execute on completion
+ */
+Workable.prototype.getAllJobCandidates = function(subdomain, shortcode, stage, limit, since_id, max_id, created_after, updated_after, callback, candidatesArr) {
+  candidatesArr = candidatesArr || [];
+  var self = this;
+  this.getJobCandidates(subdomain, shortcode, stage, limit, since_id, max_id, created_after, updated_after, function(err, data) {
+    if (err)
+      return callback(err);
+
+    //not sure if this is necessary here. I found that getJobCandidate would randomly return a string instead of a json object, which 
+    //I could only conclude was a failure to decode it the first time, but that doens't explain how I got a string in the first place...
+    if (typeof data === 'string')
+      try { data = JSON.parse(data); } catch (ex) { return callback(ex); }
+
+    if (data.paging && data.paging.next) {
+      candidatesArr = candidatesArr.concat(data.candidates);
+      var parsedUrl = url.parse(data.paging.next, true);
+      return self.getAllJobCandidates(subdomain, shortcode, stage, limit, parsedUrl.query.since_id, max_id, created_after, updated_after, callback, candidatesArr);
+    }
+
+    candidatesArr = candidatesArr.concat(data.candidates);
+    return callback(null, candidatesArr);
+  });
 };
 
 /**
