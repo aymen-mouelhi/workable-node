@@ -153,7 +153,8 @@ Workable.prototype.getJobCandidates = function(subdomain, shortcode, stage, limi
 
     if (stage) {
         query += '&stage=' + stage;
-    } else if (since_id) {
+    }
+    if (since_id) {
         query += '&since_id=' + since_id;
     }
     return this._get(query, callback);
