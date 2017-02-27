@@ -15,10 +15,26 @@ vows.describe('api tests').addBatch({
     }
   },
 
+
+  'when trying to get jobs':{
+    topic:function(){
+      new workable().getJobs('github', {
+        state: 'published'
+      }, this.callback);
+    },
+    'we should receive no errors, and data back':function(error, data) {
+      assert.equal(error, null);
+      assert.equal(typeof(data), 'object');
+    }
+  },
+
    // _get
   'when making a generic _get call to /accounts':{
-    topic:function(){ 
-      workable._get('/accounts', this.callback);
+    topic:function(){
+      new workable()._get('/accounts', {
+        company: 'github',
+        state: 'published'
+      }, this.callback);
     },
     'we should receive no errors, and data back':function(error, data) {
       assert.equal(error, null);

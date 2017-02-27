@@ -52,8 +52,8 @@ Workable.prototype.setAccessToken = function(token) {
  * @param {String} [subdomain] [The account's subdomain]
  * @param {Function} callback Method to execute on completion
  */
-Workable.prototype.getAccounts = function(callback) {
-    return this._get('/', callback);
+Workable.prototype.getAccounts = function(options, callback) {
+    return this._get('/', options, callback);
 };
 
 /**
@@ -61,8 +61,8 @@ Workable.prototype.getAccounts = function(callback) {
  * @param {String} [subdomain] [The account's subdomain]
  * @param {Function} callback Method to execute on completion
  */
-Workable.prototype.getAccount = function(subdomain, callback) {
-    return this._get('/' + subdomain, callback);
+Workable.prototype.getAccount = function(subdomain, options, callback) {
+    return this._get('/' + subdomain, options, callback);
 };
 
 /**
@@ -70,8 +70,8 @@ Workable.prototype.getAccount = function(subdomain, callback) {
  * @param {String} [subdomain] [The account's subdomain]
  * @param {Function} callback Method to execute on completion
  */
-Workable.prototype.getMembers = function(subdomain, callback) {
-    return this._get('/' + subdomain + '/members', callback);
+Workable.prototype.getMembers = function(subdomain, options, callback) {
+    return this._get('/' + subdomain + '/members', options, callback);
 };
 
 /**
@@ -79,8 +79,8 @@ Workable.prototype.getMembers = function(subdomain, callback) {
  * @param {String} [subdomain] [The account's subdomain]
  * @param {Function} callback Method to execute on completion
  */
-Workable.prototype.getRecruiters = function(subdomain, callback) {
-    return this._get('/' + subdomain + '/recruiters', callback);
+Workable.prototype.getRecruiters = function(subdomain, options, callback) {
+    return this._get('/' + subdomain + '/recruiters', options, callback);
 };
 
 /**
@@ -88,8 +88,8 @@ Workable.prototype.getRecruiters = function(subdomain, callback) {
  * @param {String} [subdomain] [The account's subdomain]
  * @param {Function} callback Method to execute on completion
  */
-Workable.prototype.getStages = function(subdomain, callback) {
-    return this._get('/' + subdomain + '/stages', callback);
+Workable.prototype.getStages = function(subdomain, options, callback) {
+    return this._get('/' + subdomain + '/stages', options, callback);
 };
 
 /**
@@ -97,8 +97,8 @@ Workable.prototype.getStages = function(subdomain, callback) {
  * @param {String} [subdomain] [The account's subdomain]
  * @param {function} callback Method to execute on completion
  */
-Workable.prototype.getJobs = function(subdomain, callback) {
-    return this._get('/' + subdomain + '/jobs', callback);
+Workable.prototype.getJobs = function(subdomain, options, callback) {
+    return this._get('/' + subdomain + '/jobs', options, callback);
 };
 
 /**
@@ -107,8 +107,8 @@ Workable.prototype.getJobs = function(subdomain, callback) {
  * @param {String} [shortcode] [The job's shortcode]
  * @param {Function} callback Method to execute on completion
  */
-Workable.prototype.getJob = function(subdomain, shortcode, callback) {
-    return this._get('/' + subdomain + '/jobs/' + shortcode, callback);
+Workable.prototype.getJob = function(subdomain, shortcode, options, callback) {
+    return this._get('/' + subdomain + '/jobs/' + shortcode, options, callback);
 };
 
 /**
@@ -117,8 +117,8 @@ Workable.prototype.getJob = function(subdomain, shortcode, callback) {
  * @param {String} [shortcode] [The job's shortcode]
  * @param {Function} callback Method to execute on completion
  */
-Workable.prototype.getJobQuestions = function(subdomain, shortcode, callback) {
-    return this._get('/' + subdomain + '/jobs/' + shortcode + '/questions', callback);
+Workable.prototype.getJobQuestions = function(subdomain, shortcode, options, callback) {
+    return this._get('/' + subdomain + '/jobs/' + shortcode + '/questions', options, callback);
 };
 
 /**
@@ -127,8 +127,8 @@ Workable.prototype.getJobQuestions = function(subdomain, shortcode, callback) {
  * @param {String} [shortcode] [The job's shortcode]
  * @param {function} callback Method to execute on completion
  */
-Workable.prototype.getJobMembers = function(subdomain, shortcode, callback) {
-    return this._get('/' + subdomain + '/jobs/' + shortcode + '/members', callback);
+Workable.prototype.getJobMembers = function(subdomain, shortcode, options, callback) {
+    return this._get('/' + subdomain + '/jobs/' + shortcode + '/members', options, callback);
 };
 
 /**
@@ -137,8 +137,8 @@ Workable.prototype.getJobMembers = function(subdomain, shortcode, callback) {
  * @param {String} [shortcode] [The job's shortcode]
  * @param {function} callback Method to execute on completion
  */
-Workable.prototype.getJobRecruiters = function(subdomain, shortcode, callback) {
-    return this._get('/' + subdomain + '/jobs/' + shortcode + '/recruiters', callback);
+Workable.prototype.getJobRecruiters = function(subdomain, shortcode, options, callback) {
+    return this._get('/' + subdomain + '/jobs/' + shortcode + '/recruiters', options, callback);
 };
 
 /**
@@ -158,7 +158,7 @@ Workable.prototype.getJobCandidates = function(subdomain, shortcode, stage, limi
     if (since_id) {
         query += '&since_id=' + since_id;
     }
-    return this._get(query, callback);
+    return this._get(query, null, callback);
     //return this._get('/' + subdomain + '/jobs/' + shortcode + '/candidates?stage=' + stage + '&limit=' + limit + '&since_id=' + since_id + '&max_id=' + max_id + '&created_after=' + created_after + '&updated_after=' + updated_after, callback);
 };
 
@@ -169,26 +169,30 @@ Workable.prototype.getJobCandidates = function(subdomain, shortcode, stage, limi
  * @param {function} callback Method to execute on completion
  */
 Workable.prototype.getAllJobCandidates = function(subdomain, shortcode, stage, limit, since_id, max_id, created_after, updated_after, callback, candidatesArr) {
-  candidatesArr = candidatesArr || [];
-  var self = this;
-  this.getJobCandidates(subdomain, shortcode, stage, limit, since_id, max_id, created_after, updated_after, function(err, data) {
-    if (err)
-      return callback(err);
+    candidatesArr = candidatesArr || [];
+    var self = this;
+    this.getJobCandidates(subdomain, shortcode, stage, limit, since_id, max_id, created_after, updated_after, function(err, data) {
+        if (err)
+            return callback(err);
 
-    //not sure if this is necessary here. I found that getJobCandidate would randomly return a string instead of a json object, which 
-    //I could only conclude was a failure to decode it the first time, but that doens't explain how I got a string in the first place...
-    if (typeof data === 'string')
-      try { data = JSON.parse(data); } catch (ex) { return callback(ex); }
+        //not sure if this is necessary here. I found that getJobCandidate would randomly return a string instead of a json object, which
+        //I could only conclude was a failure to decode it the first time, but that doens't explain how I got a string in the first place...
+        if (typeof data === 'string')
+            try {
+                data = JSON.parse(data);
+            } catch (ex) {
+                return callback(ex);
+            }
 
-    if (data.paging && data.paging.next) {
-      candidatesArr = candidatesArr.concat(data.candidates);
-      var parsedUrl = url.parse(data.paging.next, true);
-      return self.getAllJobCandidates(subdomain, shortcode, stage, limit, parsedUrl.query.since_id, max_id, created_after, updated_after, callback, candidatesArr);
-    }
+        if (data.paging && data.paging.next) {
+            candidatesArr = candidatesArr.concat(data.candidates);
+            var parsedUrl = url.parse(data.paging.next, true);
+            return self.getAllJobCandidates(subdomain, shortcode, stage, limit, parsedUrl.query.since_id, max_id, created_after, updated_after, callback, candidatesArr);
+        }
 
-    candidatesArr = candidatesArr.concat(data.candidates);
-    return callback(null, candidatesArr);
-  });
+        candidatesArr = candidatesArr.concat(data.candidates);
+        return callback(null, candidatesArr);
+    });
 };
 
 /**
@@ -198,9 +202,9 @@ Workable.prototype.getAllJobCandidates = function(subdomain, shortcode, stage, l
  * @param {String} [id] [The candidates's id]
  * @param {function} callback Method to execute on completion
  */
-Workable.prototype.getJobCandidate = function(subdomain, shortcode, id, callback) {
+Workable.prototype.getJobCandidate = function(subdomain, shortcode, id, options, callback) {
     // Todo: Update list of parameters !
-    return this._get('/' + subdomain + '/jobs/' + shortcode + '/candidates/' + id, callback);
+    return this._get('/' + subdomain + '/jobs/' + shortcode + '/candidates/' + id, options, callback);
 };
 
 /**
@@ -319,11 +323,25 @@ Workable.prototype._request = function(options, callback) {
  * @param {String} path API endpoint
  * @param {function} callback Method to execute on completion
  */
-Workable.prototype._get = function(path, callback) {
-    return this._request({
-        uri: path,
-        headers: {}
-    }, callback);
+Workable.prototype._get = function(path, options, callback) {
+  if(!(Object.keys(options).length === 0) && (options.constructor === Object)){
+    var params = "";
+    for (var key in options) {
+        if (params != "") {
+            params += "&";
+        }
+        params += key + "=" + encodeURIComponent(options[key]);
+    }
+
+    path+= '?' + params;
+  }
+
+  console.log('Path: ' + path);
+
+  return this._request({
+      uri: path,
+      headers: {}
+  }, callback);
 };
 
 /**

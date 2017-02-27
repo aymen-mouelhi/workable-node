@@ -26,23 +26,28 @@ var workable = new Workable({
 });
 
 // get All accounts
-workable.getAccounts(function(error, accounts) {
+workable.getAccounts(null, function(error, accounts) {
   console.log(JSON.stringify(accounts));
 });
 
 // get account information
-workable.getAccount('<account-subdomain>', function(error, account) {
+workable.getAccount('<account-subdomain>', null, function(error, account) {
   console.log(account);
 });
 
 // get account members
-workable.getAccountMembers('<account-subdomain>', function(error, members) {
+workable.getAccountMembers('<account-subdomain>', null, function(error, members) {
   console.log(JSON.stringify(members));
 });
 
 // get account recruiters
-workable.getAccountRecruiters('<account-subdomain>', function(error, recruiters) {
+workable.getAccountRecruiters('<account-subdomain>', null, function(error, recruiters) {
   console.log(JSON.stringify(recruiters));
+});
+
+// get Published Jobs
+workable.getJobs('<account-subdomain>', {state: 'published'}, function(error, jobs) {
+  console.log(JSON.stringify(jobs));
 });
 
 // Candidate Object
@@ -120,4 +125,3 @@ workable.createCandidate('<account-subdomain>', '<Job>', 'applied', candidate, f
 Copyright (c) 2016, Aymen Mouelhi.
 
 Author: [Aymen Mouelhi]
-
